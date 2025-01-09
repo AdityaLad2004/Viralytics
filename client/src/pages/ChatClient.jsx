@@ -11,7 +11,7 @@ const ChatClient = () => {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    const wsConnection = new WebSocket("ws://192.168.1.96:3000");
+    const wsConnection = new WebSocket("wss://my-app-server-htjh.onrender.com");
   
     wsConnection.onopen = () => {
       console.log("WebSocket connected");
@@ -60,7 +60,7 @@ const ChatClient = () => {
       setError(null);
       setMessages((prev) => [...prev, { text: inputMessage, type: "user" }]);
 
-      const response = await fetch("http://192.168.1.96:3000/chat", {
+      const response = await fetch("https://my-app-server-htjh.onrender.com/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input_value: inputMessage, requestId }),
