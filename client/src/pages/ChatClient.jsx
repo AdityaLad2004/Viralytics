@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { MessageCircle, Send, Loader2, Moon, Sun } from "lucide-react";
 
+
 const ChatClient = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -11,7 +12,7 @@ const ChatClient = () => {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    const wsConnection = new WebSocket("wss://my-app-server-htjh.onrender.com");
+    const wsConnection = new WebSocket(import.meta.env.VITE_WS_URL);
   
     wsConnection.onopen = () => {
       console.log("WebSocket connected");
@@ -60,7 +61,7 @@ const ChatClient = () => {
       setError(null);
       setMessages((prev) => [...prev, { text: inputMessage, type: "user" }]);
 
-      const response = await fetch("https://my-app-server-htjh.onrender.com/chat", {
+      const response = await fetch(import.meta.env.VITE_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input_value: inputMessage, requestId }),

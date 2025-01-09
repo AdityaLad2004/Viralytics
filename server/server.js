@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
@@ -10,13 +9,10 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-
 app.use(cors());
 app.use(express.json());
 
-
 const connections = new Map();
-
 
 wss.on('connection', (ws) => {
     const requestId = Math.random().toString(36).substring(7);
@@ -25,7 +21,6 @@ wss.on('connection', (ws) => {
     ws.on('close', () => {
         connections.delete(requestId);
     });
-
 
     ws.send(JSON.stringify({ type: 'requestId', requestId }));
 });
@@ -44,7 +39,7 @@ app.post('/chat', async (req, res) => {
 
     try {
         const response = await axios.post(
-            'https://api.langflow.astra.datastax.com/lf/2883a420-6c59-43c7-a840-f0649786eafc/api/v1/run/2f5ac0cc-55db-4fd9-a94d-4347c732477d?stream=false',
+            process.env.LANGFLOW_API_URL, 
             {
                 input_value,
                 output_type: 'chat',
@@ -64,7 +59,7 @@ app.post('/chat', async (req, res) => {
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer AstraCS:WxmOPJlzrQjdftMHtuuoxkbh:c22d5ae904338c6c04aed2273e2c8855bad821187c30dcd9bdb2564981986a56'
+                    'Authorization': `Bearer ${process.env.ASTRA_AUTH_TOKEN}`, // Using env variable for token
                 }
             }
         );
@@ -84,4 +79,3 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
